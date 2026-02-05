@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLSH ONLINE - শিক্ষা মন্ত্রণালয়</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @font-face {
+            font-family: 'iOS Bangla';
+            src: url('../assets/fonts/iOS Bangla Font.ttf') format('truetype');
+        }
+
+        :root {
+            --bg-ministry: #05070a;
+            --primary-gold: #d4af37;
+            --royal-blue: #1e40af;
+            --glass-white: rgba(255, 255, 255, 0.03);
+            --border-white: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-ministry);
+            color: #f1f5f9;
+            font-family: 'iOS Bangla', 'Segoe UI', sans-serif;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(30, 64, 175, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
+            min-height: 100vh;
+        }
+
+        .ministry-card {
+            background: var(--glass-white);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-white);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ministry-card:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .gold-text {
+            background: linear-gradient(to right, #fde047, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-dot {
+            width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        #notification-stack {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+        .toast {
+            background: rgba(15, 23, 42, 0.95); border: 1px solid var(--primary-gold);
+            padding: 16px 24px; border-radius: 12px; color: white;
+            animation: slideIn 0.4s ease forwards; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .map-placeholder {
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px);
+            border: 1px dashed var(--border-white);
+        }
+    </style>
+</head>
+<body class="p-6 lg:p-12">
+
+    <div id="notification-stack"></div>
+
+    <!-- Top Navigation / Brand -->
+    <header class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center mb-16 gap-6">
+        <div class="flex items-center gap-6">
+            <div class="w-20 h-20 rounded-full border-2 border-yellow-500/30 p-1">
+                <div class="w-full h-full rounded-full bg-gradient-to-b from-green-700 to-green-900 flex items-center justify-center shadow-2xl">
+                    <i data-lucide="landmark" class="text-white w-10 h-10"></i>
+                </div>
+            </div>
+            <div>
+                <h1 class="text-4xl font-black tracking-tight gold-text">শিক্ষা মন্ত্রণালয়</h1>
+                <p class="text-slate-500 font-bold flex items-center gap-2">
+                    গণপ্রজাতন্ত্রী বাংলাদেশ সরকার | <span class="text-green-500">কেন্দ্রীয় নিয়ন্ত্রণ ব্যবস্থা</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div class="ministry-card px-6 py-3 flex items-center gap-4">
+                <i data-lucide="user-check" class="text-blue-500"></i>
+                <div>
+                    <p class="text-[10px] text-slate-500 uppercase font-black">মিনিস্টার ইন চার্জ</p>
+                    <p class="text-sm font-bold">অ্যাডমিন প্যানেল</p>
+                </div>
+                <div class="w-px h-8 bg-white/10 mx-2"></div>
+                <button onclick="window.location.href='../auth/login.html'" class="text-red-500 hover:scale-110 transition-transform">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1600px] mx-auto space-y-12">
+        
+        <!-- National Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+            <div class="ministry-card p-8 group">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="p-3 bg-blue-500/10 rounded-2xl text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-all">
+                        <i data-lucide="building"></i>
+                    </div>
+                    <span class="text-xs font-bold text-green-500">+২.৪% বৃদ্ধি</span>
+                </div>
+                <p class="text-slate-500 text-sm font-bold mb-1">মোট শিক্ষা প্রতিষ্ঠান</p>
+                <h2 class="text-4xl font-black">১,৪২,৪৫০</h2>
+            </div>
+            
+            <div class="ministry-card p-8 group">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="p-3 bg-purple-500/10 rounded-2xl text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-all">
+                        <i data-lucide="graduation-cap"></i>
+                    </div>
+                    <span class="text-xs font-bold text-blue-400">রিয়েল-টাইম</span>
+                </div>
+                <p class="text-slate-500 text-sm font-bold mb-1">সক্রিয় শিক্ষার্থী</p>
+                <h2 class="text-4xl font-black">৪.৫২ কোটি</h2>
+            </div>
+
+            <div class="ministry-card p-8 group border-l-4 border-l-yellow-500">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="p-3 bg-yellow-500/10 rounded-2xl text-yellow-500 group-hover:bg-yellow-500 group-hover:text-white transition-all">
+                        <i data-lucide="cpu"></i>
+                    </div>
+                    <span class="text-xs font-bold text-yellow-500">স্মার্ট বাংলাদেশ</span>
+                </div>
+                <p class="text-slate-500 text-sm font-bold mb-1">ডিজিটাল ল্যাব স্থাপন</p>
+                <h2 class="text-4xl font-black">৮৫,২০০</h2>
+            </div>
+
+            <div class="ministry-card p-8 group border-l-4 border-l-green-500">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="p-3 bg-green-500/10 rounded-2xl text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all">
+                        <i data-lucide="activity"></i>
+                    </div>
+                    <span class="text-xs font-bold text-green-500">লাইভ</span>
+                </div>
+                <p class="text-slate-500 text-sm font-bold mb-1">জাতীয় উপস্থিতি হার</p>
+                <h2 class="text-4xl font-black text-green-400">৯২.৫%</h2>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Content -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-12">
+            
+            <!-- District Performance Board -->
+            <div class="xl:col-span-2 space-y-8">
+                <div class="ministry-card overflow-hidden">
+                    <div class="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
+                        <h3 class="text-xl font-bold flex items-center gap-3">
+                            <i data-lucide="bar-chart-3" class="text-blue-500"></i> জেলাভিত্তিক পারফরম্যান্স রিপোর্ট
+                        </h3>
+                        <div class="flex gap-2">
+                            <button class="px-4 py-2 bg-white/5 rounded-xl text-xs hover:bg-white/10 transition-all">ফিল্টার জেলা</button>
+                            <button class="px-4 py-2 bg-blue-600 rounded-xl text-xs font-bold hover:bg-blue-500 transition-all">এক্সপোর্ট PDF</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-white/[0.02] text-[10px] text-slate-500 uppercase font-black tracking-widest">
+                                <tr>
+                                    <th class="p-8">জেলা</th>
+                                    <th class="p-8">মোট স্কুল</th>
+                                    <th class="p-8">ডিজিটালাইজেশন</th>
+                                    <th class="p-8">গ্রেড</th>
+                                    <th class="p-8 text-right">অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="district-body" class="divide-y divide-white/5">
+                                <!-- JS Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- National Map Simulation -->
+                <div class="ministry-card p-8 h-[400px] flex flex-col">
+                    <h3 class="text-lg font-bold mb-6 flex items-center gap-3">
+                        <i data-lucide="map-pin" class="text-red-500"></i> ন্যাশনাল ডিজিটাল কভারেজ ম্যাপ
+                    </h3>
+                    <div class="flex-1 map-placeholder rounded-3xl flex items-center justify-center flex-col gap-4 text-slate-500">
+                        <i data-lucide="globe" class="w-16 h-16 animate-pulse"></i>
+                        <p class="text-sm font-bold tracking-widest">লাইভ ম্যাপ লোড হচ্ছে...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar: Policy & Requests -->
+            <div class="space-y-8">
+                
+                <!-- Mega Project Approval -->
+                <div class="ministry-card p-8 border-t-4 border-t-blue-500">
+                    <h3 class="text-lg font-bold mb-6 flex items-center gap-3">
+                        <i data-lucide="file-text" class="text-blue-500"></i> মেগা প্রজেক্ট অ্যাপ্রুভাল
+                    </h3>
+                    <div id="project-list" class="space-y-4">
+                        <!-- Projects injected by JS -->
+                    </div>
+                </div>
+
+                <!-- National Notice Broadcaster -->
+                <div class="ministry-card p-8">
+                    <h3 class="text-sm font-black text-slate-500 uppercase mb-6 tracking-widest">ন্যাশনাল ব্রডকাস্ট</h3>
+                    <div class="space-y-4">
+                        <input type="text" id="notice-title" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-sm outline-none focus:border-yellow-500" placeholder="নোটিশের শিরোনাম">
+                        <textarea id="notice-body" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-sm outline-none focus:border-yellow-500 h-32" placeholder="বিস্তারিত সরকারি আদেশ..."></textarea>
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="broadcastToAll('সতর্কতা')" class="bg-red-600/20 text-red-500 py-3 rounded-xl text-xs font-bold hover:bg-red-600 hover:text-white transition-all">জরুরি এলার্ট</button>
+                            <button onclick="broadcastToAll('সাধারণ')" class="bg-blue-600 text-white py-3 rounded-xl text-xs font-bold hover:bg-blue-500 transition-all">নোটিশ পাঠান</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Logs -->
+                <div class="ministry-card p-8 bg-black/40">
+                    <h3 class="text-xs font-black text-slate-600 uppercase mb-4 tracking-widest">সিস্টেম সিকিউরিটি লগ</h3>
+                    <div class="space-y-3 font-mono text-[10px] text-slate-500">
+                        <p class="flex justify-between"><span>[02:14:10]</span> <span class="text-green-500">DHAKA_DISTRICT SYNCED</span></p>
+                        <p class="flex justify-between"><span>[02:15:05]</span> <span class="text-blue-500">SERVER ENCRYPTION ACTIVE</span></p>
+                        <p class="flex justify-between"><span>[02:18:44]</span> <span class="text-yellow-500">GAZIPUR REQ RECEIVED</span></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Load Lucide Icons
+        lucide.createIcons();
+
+        // Data: Districts
+        const districts = [
+            { name: "ঢাকা", s: "৫,৪০০", digital: "৯৮%", grade: "A+", color: "green" },
+            { name: "চট্টগ্রাম", s: "৪,২০০", digital: "৯২%", grade: "A", color: "blue" },
+            { name: "গাজীপুর", s: "২,৮০০", digital: "৯৫%", grade: "A+", color: "green" },
+            { name: "রাজশাহী", s: "৩,১০০", digital: "৮৫%", grade: "B+", color: "yellow" },
+            { name: "সিলেট", s: "২,৪৫০", digital: "৮৮%", grade: "A-", color: "blue" },
+            { name: "খুলনা", s: "২,৯০০", digital: "৮২%", grade: "B", color: "yellow" }
+        ];
+
+        const projects = [
+            { id: 'p1', title: '১০০০ স্মার্ট ক্লাসরুম স্থাপন', district: 'বরিশাল বিভাগ', budget: '৳৫০ কোটি' },
+            { id: 'p2', title: 'শিক্ষক প্রশিক্ষণ প্রোগ্রাম (IT)', district: 'রংপুর বিভাগ', budget: '৳১২ কোটি' }
+        ];
+
+        function initMinistry() {
+            // Render Districts
+            const body = document.getElementById('district-body');
+            body.innerHTML = districts.map(d => `
+                <tr class="hover:bg-white/[0.02] transition-all">
+                    <td class="p-8">
+                        <p class="font-bold text-base text-white">${d.name}</p>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest">বিভাগীয় মেইন হেডকোয়ার্টার</p>
+                    </td>
+                    <td class="p-8 text-slate-400 font-medium">${d.s} স্কুল</td>
+                    <td class="p-8">
+                        <div class="flex items-center gap-3">
+                            <div class="w-16 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                <div class="h-full bg-blue-500" style="width: ${d.digital}"></div>
+                            </div>
+                            <span class="text-xs font-bold text-blue-400">${d.digital}</span>
+                        </div>
+                    </td>
+                    <td class="p-8">
+                        <span class="px-4 py-2 rounded-lg bg-green-500/10 text-green-500 text-xs font-black border border-green-500/20">${d.grade}</span>
+                    </td>
+                    <td class="p-8 text-right">
+                        <button onclick="notify('জেলার লাইভ ডেটা এক্সেস করা হচ্ছে...')" class="p-3 text-slate-500 hover:text-yellow-500"><i data-lucide="eye" class="w-5 h-5"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Render Projects
+            const pList = document.getElementById('project-list');
+            pList.innerHTML = projects.map(p => `
+                <div id="${p.id}" class="p-5 bg-white/5 border border-white/5 rounded-3xl space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-black text-white">${p.title}</p>
+                            <p class="text-[10px] text-slate-500">${p.district}</p>
+                        </div>
+                        <p class="text-yellow-500 font-mono text-xs">${p.budget}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="approveProject('${p.id}')" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-xl text-[10px] font-black transition-all">অনুমোদন দিন</button>
+                        <button onclick="notify('প্রজেক্টটি রিভিশনের জন্য পাঠানো হয়েছে', 'red')" class="px-3 bg-white/5 text-slate-500 rounded-xl hover:text-red-500"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        function notify(msg, color = 'yellow') {
+            const stack = document.getElementById('notification-stack');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if(color === 'red') toast.style.borderColor = '#ef4444';
+            
+            toast.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i data-lucide="bell" class="w-4 h-4 text-yellow-500"></i>
+                    <p class="text-xs font-bold">${msg}</p>
+                </div>
+            `;
+            stack.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3000);
+        }
+
+        function approveProject(id) {
+            const el = document.getElementById(id);
+            el.style.transform = 'scale(0.9)';
+            el.style.opacity = '0';
+            notify("প্রজেক্টটি সফলভাবে অনুমোদিত হয়েছে এবং ফান্ড রিলিজ করা হয়েছে।");
+            setTimeout(() => el.remove(), 400);
+        }
+
+        function broadcastToAll(type) {
+            const title = document.getElementById('notice-title').value;
+            if(!title) return notify("শিরোনাম লিখুন!", "red");
+            notify(`সারা দেশের সকল ড্যাশবোর্ডে ${type} নোটিশ পাঠানো হয়েছে।`);
+            document.getElementById('notice-title').value = "";
+            document.getElementById('notice-body').value = "";
+        }
+
+        window.onload = initMinistry;
+    </script>
+</body>
+</html>

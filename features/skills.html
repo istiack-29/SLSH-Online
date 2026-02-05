@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLSH - স্কিলস ও ক্লাব</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @font-face {
+            font-family: 'iOS Bangla';
+            src: url('../assets/fonts/iOS Bangla Font.ttf') format('truetype');
+        }
+
+        body {
+            background-color: #020408;
+            color: #e2e8f0;
+            font-family: 'iOS Bangla', sans-serif;
+            background-image: radial-gradient(circle at 50% -20%, #1e293b 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+        }
+
+        .iphone-scroll::-webkit-scrollbar { width: 4px; }
+        .iphone-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .skill-badge {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .club-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .club-card:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateX(5px);
+        }
+
+        #notification-container {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+        .toast {
+            animation: slideIn 0.3s ease-out forwards;
+            background: rgba(15, 23, 42, 0.95);
+            border-left: 4px solid #3b82f6;
+            padding: 12px 20px; border-radius: 12px; color: white;
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div id="notification-container"></div>
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div class="flex items-center gap-4">
+                <button onclick="window.location.href='../dashboards/ge-dashboard.html'" class="glass p-3 hover:bg-white/10 transition-all text-blue-400">
+                    <i data-lucide="chevron-left"></i>
+                </button>
+                <div>
+                    <h1 class="text-xl font-bold">স্কিলস ও এক্সট্রা-কারিকুলার</h1>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-tighter">সাদেকপুর মডেল হাই স্কুল</p>
+                </div>
+            </div>
+            <div class="hidden md:block glass px-4 py-2 text-xs font-mono text-blue-400">অ্যাক্টিভ মডিউল v২.০</div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Club List (Left Side - 15 Clubs) -->
+            <div class="lg:col-span-4 space-y-4">
+                <div class="flex justify-between items-center px-2">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                        <i data-lucide="layers" class="w-4 h-4 text-blue-500"></i> ক্লাব তালিকা
+                    </h3>
+                    <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full font-bold">১৫ টি</span>
+                </div>
+                
+                <div class="iphone-scroll overflow-y-auto max-h-[700px] pr-2 space-y-3">
+                    <!-- Club Items -->
+                    <div class="glass p-4 club-card border-blue-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">AI ও মেশিন লার্নিং ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ২৫ জন</p></div>
+                            <i data-lucide="brain-circuit" class="text-blue-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-green-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">অ্যাডভান্সড ম্যাথমেটিক্স ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ৩০ জন</p></div>
+                            <i data-lucide="calculator" class="text-green-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-purple-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">রোবোটিক্স ও আইওটি ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ১৮ জন</p></div>
+                            <i data-lucide="bot" class="text-purple-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-yellow-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">মহাকাশ গবেষণা ও জ্যোতির্বিজ্ঞান</h4><p class="text-[10px] text-slate-500">সদস্য: ১২ জন</p></div>
+                            <i data-lucide="rocket" class="text-yellow-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-red-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">বিতর্ক ও বাগ্মিতা ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ৪০ জন</p></div>
+                            <i data-lucide="mic-2" class="text-red-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-cyan-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">কোডিং ও সফটওয়্যার ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ৫০ জন</p></div>
+                            <i data-lucide="code-2" class="text-cyan-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-orange-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">ফটোগ্রাফি ও মিডিয়া ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ২২ জন</p></div>
+                            <i data-lucide="camera" class="text-orange-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-emerald-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">এনভায়রনমেন্ট ও গ্রিন ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ৩৫ জন</p></div>
+                            <i data-lucide="leaf" class="text-emerald-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-indigo-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">সাহিত্য ও আবৃত্তি ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ১৫ জন</p></div>
+                            <i data-lucide="book-open" class="text-indigo-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-pink-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">চিত্রকলা ও চারুশিল্প ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ২০ জন</p></div>
+                            <i data-lucide="palette" class="text-pink-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-slate-400">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">সংগীত ও ললিতকলা ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ২৮ জন</p></div>
+                            <i data-lucide="music" class="text-slate-400 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-blue-400">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">স্পোর্টস ও অ্যাথলেটিক্স ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ৬০ জন</p></div>
+                            <i data-lucide="trophy" class="text-blue-400 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-teal-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">হেলথ ও ফার্স্ট এইড ক্লাব</h4><p class="text-[10px] text-slate-500">সদস্য: ২৫ জন</p></div>
+                            <i data-lucide="heart-pulse" class="text-teal-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-lime-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">বিজনেস ও অন্ট্রাপ্রেনিউরশিপ</h4><p class="text-[10px] text-slate-500">সদস্য: ১২ জন</p></div>
+                            <i data-lucide="trending-up" class="text-lime-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="glass p-4 club-card border-rose-500">
+                        <div class="flex justify-between items-center">
+                            <div><h4 class="text-sm font-bold">ভাষা শিক্ষা (ইংরেজি ও জাপানিজ)</h4><p class="text-[10px] text-slate-500">সদস্য: ৪৫ জন</p></div>
+                            <i data-lucide="languages" class="text-rose-500 w-5 h-5"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Best Performers & Message Area (Right Side) -->
+            <div class="lg:col-span-8 space-y-6">
+                <div class="flex justify-between items-center px-2">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-500"></i> বেস্ট পারফর্মার্স প্রোফাইল
+                    </h3>
+                    <button onclick="goBack()" class="text-[10px] font-bold text-blue-400 flex items-center gap-1 hover:underline">
+                        ড্যাশবোর্ডে ফিরুন <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Student Profile 1 -->
+                    <div class="glass p-5 border-t-2 border-t-blue-500">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-14 h-14 rounded-full bg-blue-600/20 flex items-center justify-center font-bold text-blue-500 text-xl shadow-inner">S</div>
+                            <div>
+                                <h4 class="font-bold">সাদিকুর রহমান</h4>
+                                <p class="text-[10px] text-slate-500">রোল: ০১ | ১০ম শ্রেণী</p>
+                                <p class="text-[9px] text-blue-400">সদস্য: AI ও কোডিং ক্লাব</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="skill-badge">AI Prompting</span>
+                            <span class="skill-badge">Python</span>
+                            <span class="skill-badge">Robotics</span>
+                        </div>
+                        <button onclick="sendOfficeMessage('সাদিকুর রহমান')" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl text-[11px] font-bold transition-all shadow-lg shadow-blue-500/10 flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-3 h-3"></i> SLSH অফিসে মেসেজ পাঠান
+                        </button>
+                    </div>
+
+                    <!-- Student Profile 2 -->
+                    <div class="glass p-5 border-t-2 border-t-purple-500">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-14 h-14 rounded-full bg-purple-600/20 flex items-center justify-center font-bold text-purple-500 text-xl shadow-inner">F</div>
+                            <div>
+                                <h4 class="font-bold">ফারিয়া আক্তার</h4>
+                                <p class="text-[10px] text-slate-500">রোল: ০৩ | ৯ম শ্রেণী</p>
+                                <p class="text-[9px] text-purple-400">সদস্য: বিতর্ক ও ভাষা ক্লাব</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="skill-badge">Public Speaking</span>
+                            <span class="skill-badge">Leadership</span>
+                            <span class="skill-badge">Japanese N5</span>
+                        </div>
+                        <button onclick="sendOfficeMessage('ফারিয়া আক্তার')" class="w-full bg-purple-600 hover:bg-purple-500 py-3 rounded-xl text-[11px] font-bold transition-all shadow-lg shadow-purple-500/10 flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-3 h-3"></i> SLSH অফিসে মেসেজ পাঠান
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Strategic Support Card -->
+                <div class="glass p-8 bg-gradient-to-br from-blue-900/20 to-transparent border-blue-500/20 relative overflow-hidden group">
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="bg-blue-600 p-3 rounded-2xl shadow-xl shadow-blue-600/20">
+                                <i data-lucide="zap" class="text-white w-6 h-6"></i>
+                            </div>
+                            <h4 class="font-bold text-lg">স্কিল ডেভেলপমেন্ট ও অফিস কানেক্ট</h4>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-6 leading-relaxed max-w-md">
+                            শিক্ষার্থীদের মেধা বিকাশে এবং আধুনিক বিশ্বের সাথে তাল মেলাতে SLSH অফিস থেকে বিশেষ ট্রেনিং ও মেন্টরশিপ প্রোগ্রামের ব্যবস্থা করা হয়েছে। যেকোনো সহায়তায় সরাসরি যোগাযোগ করুন।
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button onclick="showGeneralOfficeToast('ডেভেলপমেন্ট')" class="bg-white/5 hover:bg-white/10 px-6 py-3 rounded-xl text-xs font-bold border border-white/10 flex items-center justify-center gap-2 transition-all">
+                                <i data-lucide="message-square" class="w-4 h-4 text-blue-400"></i> স্কিল ডেভলপ করতে মেসেজ পাঠান
+                            </button>
+                            <button onclick="showGeneralOfficeToast('অফিস')" class="bg-blue-600/10 hover:bg-blue-600/20 px-6 py-3 rounded-xl text-xs font-bold border border-blue-500/20 text-blue-400 flex items-center justify-center gap-2 transition-all">
+                                <i data-lucide="building-2" class="w-4 h-4"></i> SLSH অফিস ভিজিট রিকোয়েস্ট
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Decorative Background Element -->
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function showToast(message, iconName = 'check', color = '#3b82f6') {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.borderLeftColor = color;
+            toast.innerHTML = `
+                <i data-lucide="${iconName}" class="w-4 h-4" style="color:${color}"></i>
+                <span class="text-[11px] font-bold">${message}</span>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        }
+
+        function sendOfficeMessage(studentName) {
+            showToast(`${studentName}-এর স্কিল প্রোফাইল SLSH হেড অফিসে পাঠানো হয়েছে।`, 'send', '#10b981');
+        }
+
+        function showGeneralOfficeToast(type) {
+            if(type === 'ডেভেলপমেন্ট') {
+                showToast(`আপনার স্কিল ডেভলপমেন্ট রিকোয়েস্ট SLSH অফিসে গৃহীত হয়েছে।`, 'zap', '#60a5fa');
+            } else {
+                showToast(`অফিস ভিজিট রিকোয়েস্টটি প্রসেসিং-এ আছে।`, 'building', '#3b82f6');
+            }
+        }
+
+        function goBack() {
+            window.location.href = '../dashboards/oard.html';
+        }
+    </script>
+</body>
+</html>
+

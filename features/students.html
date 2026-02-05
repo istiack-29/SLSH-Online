@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLSH - ৫০০০+ শিক্ষার্থী ডাটাবেজ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @font-face {
+            font-family: 'iOS Bangla';
+            src: url('../assets/fonts/iOS Bangla Font.ttf') format('truetype');
+        }
+
+        body {
+            background-color: #020408;
+            color: #e2e8f0;
+            font-family: 'iOS Bangla', sans-serif;
+            background-image: radial-gradient(circle at 50% -20%, #1e293b 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+        }
+
+        .student-row {
+            transition: all 0.2s ease;
+        }
+        .student-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateX(5px);
+        }
+
+        #profile-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Animation for Shuffling */
+        .fade-in {
+            animation: fadeIn 0.4s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div class="flex items-center gap-5">
+                <button onclick="window.location.href='../dashboards/ge-dashboard.html'" class="glass p-3.5 hover:bg-blue-600 text-white transition-all">
+                    <i data-lucide="arrow-left"></i>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">স্মার্ট শিক্ষার্থী প্রোফাইল</h1>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest">মোট ৫০ জন শিক্ষার্থী প্রদর্শিত (শ্রেণী ভিত্তিক)</p>
+                </div>
+            </div>
+            <div class="hidden md:flex glass px-6 py-2 items-center gap-3 border-green-500/20">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span class="text-xs font-bold text-green-400">সিস্টেম অনলাইন</span>
+            </div>
+        </header>
+
+        <!-- Selection Controls (Triggers Shuffle) -->
+        <div class="glass p-5 mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="text-[10px] text-slate-500 uppercase font-bold mb-2 block">শ্রেণী নির্বাচন</label>
+                <select onchange="shuffleAndReload()" id="class-select" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 outline-none focus:border-blue-500">
+                    <option value="১০">১০ম শ্রেণী</option>
+                    <option value="৯">৯ম শ্রেণী</option>
+                    <option value="৮">৮ম শ্রেণী</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-[10px] text-slate-500 uppercase font-bold mb-2 block">সেকশন</label>
+                <select onchange="shuffleAndReload()" id="section-select" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 outline-none focus:border-blue-500">
+                    <option value="ক">ক শাখা (Alpha)</option>
+                    <option value="খ">খ শাখা (Beta)</option>
+                </select>
+            </div>
+            <div class="relative flex items-end">
+                <i data-lucide="search" class="absolute left-4 bottom-4 w-4 h-4 text-slate-500"></i>
+                <input type="text" placeholder="খুঁজুন..." class="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 outline-none focus:border-blue-500">
+            </div>
+        </div>
+
+        <!-- Student Table -->
+        <div class="glass overflow-hidden shadow-2xl">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-white/5 text-[10px] uppercase text-slate-500 font-bold tracking-widest">
+                        <tr>
+                            <th class="p-6">রোল</th>
+                            <th class="p-6">শিক্ষার্থীর নাম ও তথ্য</th>
+                            <th class="p-6">বিভাগ</th>
+                            <th class="p-6">রক্তের গ্রুপ</th>
+                            <th class="p-6 text-right">অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-table-body" class="divide-y divide-white/5">
+                        <!-- JS handles the list -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Mega Profile Modal -->
+    <div id="profile-modal">
+        <div class="glass w-full max-w-5xl max-h-[95vh] overflow-y-auto p-6 md:p-10 shadow-[0_0_100px_rgba(59,130,246,0.2)]">
+            <div class="flex justify-between items-start mb-8 border-b border-white/10 pb-6">
+                <div class="flex items-center gap-6">
+                    <div id="m-avatar" class="w-20 h-20 rounded-3xl bg-blue-600 flex items-center justify-center text-3xl font-bold text-white shadow-xl"></div>
+                    <div>
+                        <h2 id="m-name" class="text-3xl font-black text-white"></h2>
+                        <p id="m-uid" class="text-blue-400 font-mono text-xs"></p>
+                    </div>
+                </div>
+                <button onclick="closeModal()" class="p-2 hover:bg-white/10 rounded-full transition-all text-slate-400">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Detailed Data -->
+                <div class="space-y-4">
+                    <div class="glass p-5 bg-white/[0.01]">
+                        <h4 class="text-[10px] text-blue-500 font-bold uppercase mb-4 tracking-widest">ব্যক্তিগত প্রোফাইল</h4>
+                        <div class="space-y-3 text-sm" id="detailed-info-container">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Graph -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="glass p-6 bg-blue-900/10 border-blue-500/20">
+                        <h4 class="text-sm font-bold mb-6 flex items-center gap-2">
+                            <i data-lucide="trending-up" class="text-blue-500"></i> লাইভ একাডেমিক গ্রাফ (CT to Yearly)
+                        </h4>
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const firstNames = ["সাদিকুর", "ফারিয়া", "তানভীর", "নাসরিন", "জুবায়ের", "রাইসা", "আরিফ", "ফারজানা", "মেহেদী", "সুমাইয়া", "রাকিব", "আফরোজা", "ইমরান", "নিশাত", "তামিম"];
+        const lastNames = ["রহমান", "আক্তার", "হাসান", "ইসলাম", "চৌধুরী", "আহমেদ", "খান", "শিকদার", "মাহমুদ", "মির্জা"];
+        const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
+        const mothersNames = ["সালেহা বেগম", "খাদিজা আক্তার", "মরিয়ম বিবি", "রোকেয়া বেগম", "হাসনা হেনা"];
+        const fathersNames = ["মোঃ করিমুল্লাহ", "আঃ রহিম", "মোঃ জসিম", "মোঃ খলিল", "শফিকুল ইসলাম"];
+
+        let students = [];
+        let performanceChart = null;
+
+        function generateStudentData() {
+            students = [];
+            for (let i = 1; i <= 50; i++) {
+                const fName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                const lName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                students.push({
+                    roll: i.toString().padStart(3, '0'),
+                    name: `${fName} ${lName}`,
+                    uid: `২০২৪১২${Math.floor(1000 + Math.random() * 9000)}`,
+                    father: fathersNames[Math.floor(Math.random() * fathersNames.length)],
+                    mother: mothersNames[Math.floor(Math.random() * mothersNames.length)],
+                    blood: bloodGroups[Math.floor(Math.random() * bloodGroups.length)],
+                    dob: `${Math.floor(1 + Math.random() * 28)} মে, ২০০${Math.floor(7 + Math.random() * 3)}`,
+                    reg: `২০০৯${Math.floor(10000000000 + Math.random() * 90000000000)}`,
+                    address: "সাদেকপুর, সদর, কুমিল্লা",
+                    phone: `০১৭${Math.floor(10000000 + Math.random() * 90000000)}`,
+                    scores: Array.from({length: 7}, () => Math.floor(65 + Math.random() * 35))
+                });
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('student-table-body');
+            tbody.innerHTML = students.map(s => `
+                <tr class="student-row fade-in border-b border-white/5">
+                    <td class="p-6 font-mono text-blue-400 font-bold">#${s.roll}</td>
+                    <td class="p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center font-bold text-blue-500">${s.name.charAt(0)}</div>
+                            <div>
+                                <h4 class="text-sm font-bold">${s.name}</h4>
+                                <p class="text-[10px] text-slate-500">পিতা: ${s.father}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="p-6 text-xs font-bold text-slate-400">বিজ্ঞান</td>
+                    <td class="p-6 text-xs text-red-400 font-bold">${s.blood}</td>
+                    <td class="p-6 text-right">
+                        <button onclick="openProfile('${s.roll}')" class="bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white px-4 py-2 rounded-xl text-[10px] font-bold transition-all uppercase tracking-tighter">প্রোফাইল</button>
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function shuffleAndReload() {
+            // Simple logic to shuffle current array
+            students.sort(() => Math.random() - 0.5);
+            renderTable();
+        }
+
+        function openProfile(roll) {
+            const s = students.find(item => item.roll === roll);
+            document.getElementById('m-name').innerText = s.name;
+            document.getElementById('m-uid').innerText = `ID: ${s.uid}`;
+            document.getElementById('m-avatar').innerText = s.name.charAt(0);
+            
+            const infoContainer = document.getElementById('detailed-info-container');
+            infoContainer.innerHTML = `
+                <div class="border-b border-white/5 pb-2"><p class="text-[9px] text-slate-500 uppercase">পিতার নাম</p><p class="font-bold text-xs">${s.father}</p></div>
+                <div class="border-b border-white/5 pb-2"><p class="text-[9px] text-slate-500 uppercase">মাতার নাম</p><p class="font-bold text-xs">${s.mother}</p></div>
+                <div class="border-b border-white/5 pb-2"><p class="text-[9px] text-slate-500 uppercase">জন্ম তারিখ</p><p class="font-bold text-xs">${s.dob}</p></div>
+                <div class="border-b border-white/5 pb-2"><p class="text-[9px] text-slate-500 uppercase">জন্ম নিবন্ধন</p><p class="font-bold text-[10px] font-mono">${s.reg}</p></div>
+                <div class="border-b border-white/5 pb-2"><p class="text-[9px] text-slate-500 uppercase">ব্লাড গ্রুপ</p><p class="font-bold text-red-400 text-xs">${s.blood}</p></div>
+                <div class="border-b border-white/5 pb-2"><p class="text-[9px] text-slate-500 uppercase">ফোন নম্বর</p><p class="font-bold text-blue-400 text-xs">${s.phone}</p></div>
+                <div><p class="text-[9px] text-slate-500 uppercase">ঠিকানা</p><p class="font-bold text-xs">${s.address}</p></div>
+            `;
+
+            document.getElementById('profile-modal').style.display = 'flex';
+            initChart(s.scores);
+        }
+
+        function closeModal() {
+            document.getElementById('profile-modal').style.display = 'none';
+        }
+
+        function initChart(scores) {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            if(performanceChart) performanceChart.destroy();
+
+            performanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['CT', 'উইকলি', 'মান্থলি', 'টিউটোরিয়াল', 'মিড-টার্ম', 'হাফ ইয়ার্লি', 'বার্ষিক'],
+                    datasets: [{
+                        label: 'স্কোর %',
+                        data: scores,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 4,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 0, max: 100, ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { ticks: { color: '#64748b' }, grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        window.onload = () => {
+            generateStudentData();
+            renderTable();
+        };
+
+        window.onclick = (e) => {
+            if (e.target == document.getElementById('profile-modal')) closeModal();
+        }
+    </script>
+</body>
+</html>
+
+

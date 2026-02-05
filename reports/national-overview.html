@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLSH - ন্যাশনাল ওভারভিউ (জাতীয় রিপোর্ট)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @font-face {
+            font-family: 'iOS Bangla';
+            src: url('../assets/fonts/iOS Bangla Font.ttf') format('truetype');
+        }
+        :root {
+            --bg-dark: #020306;
+            --glass: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+        }
+        body {
+            background-color: var(--bg-dark);
+            color: #f1f5f9;
+            font-family: 'iOS Bangla', 'Segoe UI', sans-serif;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .data-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020306; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pulse-red {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+
+    <nav class="max-w-[1600px] mx-auto flex justify-between items-center mb-16">
+        <div class="flex items-center gap-6">
+            <a href="select_report.html" class="glass-card p-4 hover:bg-white/10 transition-all">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-blue-500"></i>
+            </a>
+            <div>
+                <h1 class="text-3xl font-black hero-gradient">ন্যাশনাল ওভারভিউ ড্যাশবোর্ড</h1>
+                <p class="text-slate-500 text-sm flex items-center gap-2 tracking-widest uppercase font-bold">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span> লাইভ ডাটাবেজ: ফেব্রুয়ারি ২০২৬
+                </p>
+            </div>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="window.print()" class="glass-card px-6 py-3 flex items-center gap-2 text-sm font-bold hover:bg-white/5 transition-all">
+                <i data-lucide="printer" class="w-4 h-4"></i> প্রিন্ট রিপোর্ট
+            </button>
+            <div class="glass-card px-6 py-3 bg-blue-600/10 border-blue-500/20 text-blue-400 font-bold flex items-center gap-2">
+                EIIN ভেরিফাইড <i data-lucide="shield-check" class="w-4 h-4"></i>
+            </div>
+        </div>
+    </nav>
+
+    <section class="max-w-[1600px] mx-auto mb-16">
+        <div class="glass-card p-10 border-l-8 border-l-blue-600 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-10 opacity-5">
+                <i data-lucide="info" class="w-40 h-40"></i>
+            </div>
+            <p class="text-xl md:text-3xl font-medium leading-relaxed text-slate-200 italic">
+                “রাষ্ট্রের সর্বোচ্চ স্বচ্ছতা নিশ্চিত করতে এবং দুর্নীতি দমনে ও জাতিকে সুশিক্ষিত জাতি হিসেবে গড়ে তুলতে এই ওয়েবসাইটে সমস্ত রিপোর্ট পাবলিক করা হলো যাতে দেশের যেকোনো জনগণ এই রিপোর্ট দেখতে পারে।”
+            </p>
+            <div class="mt-6 flex items-center gap-4">
+                <span class="text-xs font-bold px-3 py-1 bg-white/5 rounded-full text-slate-400">সরকারি গেজেট নং: ২০২৬-এবি৪</span>
+                <span class="text-xs font-bold px-3 py-1 bg-white/5 rounded-full text-slate-400">পাবলিক এক্সেস লেভেল: ১০০%</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+        <div class="glass-card p-8 text-center relative">
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">মোট শিক্ষা প্রতিষ্ঠান</p>
+            <h3 class="text-4xl font-black text-white">৩৬,৪২০</h3>
+            <p class="text-xs text-blue-400 mt-2">সারাদেশে নিবন্ধিত</p>
+        </div>
+        <div class="glass-card p-8 text-center">
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">ডিজিটাল ল্যাব সম্পন্ন</p>
+            <h3 class="text-4xl font-black text-emerald-500">১৮,৯৫০</h3>
+            <p class="text-xs text-emerald-400/50 mt-2">৫২% প্রগতি</p>
+        </div>
+        <div class="glass-card p-8 text-center">
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">মোট শিক্ষার্থী (সক্রিয়)</p>
+            <h3 class="text-4xl font-black text-purple-500">৪.২ কোটি</h3>
+            <p class="text-xs text-purple-400 mt-2">ইউনিক আইডি ভেরিফাইড</p>
+        </div>
+        <div class="glass-card p-8 text-center">
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">জাতীয় উপস্থিতি হার</p>
+            <h3 class="text-4xl font-black text-orange-500">৮৮.৫%</h3>
+            <div class="w-full bg-white/5 h-1 mt-4 rounded-full">
+                <div class="bg-orange-500 h-full w-[88%]"></div>
+            </div>
+        </div>
+        <div class="glass-card p-8 text-center border-red-500/20 pulse-red">
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">দুর্নীতি অভিযোগ (তদন্তাধীন)</p>
+            <h3 class="text-4xl font-black text-red-500">১২টি</h3>
+            <p class="text-[10px] text-red-400 mt-2">অ্যান্টি-করাপশন সেল দ্বারা মনিটরড</p>
+        </div>
+    </section>
+
+    <section class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+        <div class="lg:col-span-2 glass-card p-10">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i data-lucide="trending-up" class="text-blue-500"></i> বিগত ১০ বছরের ডিজিটাল অগ্রগতি
+                </h3>
+                <select class="bg-white/5 border border-white/10 text-xs p-2 rounded-lg outline-none">
+                    <option>২০১৬ - ২০২৬</option>
+                    <option>২০২০ - ২০২৬</option>
+                </select>
+            </div>
+            <canvas id="nationalTrendChart" height="120"></canvas>
+        </div>
+
+        <div class="glass-card p-10 flex flex-col justify-between">
+            <h3 class="text-xl font-bold mb-8 flex items-center gap-2">
+                <i data-lucide="pie-chart" class="text-emerald-500"></i> রিসোর্স ডিস্ট্রিবিউশন
+            </h3>
+            <div class="flex-1 flex items-center justify-center">
+                <canvas id="resourceDoughnut"></canvas>
+            </div>
+            <div class="mt-8 space-y-3">
+                <div class="flex justify-between text-xs"><span>স্মার্ট ডিভাইস</span><span class="text-blue-500">৪০%</span></div>
+                <div class="flex justify-between text-xs"><span>ইন্টারনেট কানেক্টিভিটি</span><span class="text-emerald-500">৩৫%</span></div>
+                <div class="flex justify-between text-xs"><span>মেন্টর সাপোর্ট</span><span class="text-orange-500">২৫%</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-[1600px] mx-auto mb-16">
+        <div class="glass-card overflow-hidden">
+            <div class="p-8 border-b border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/5">
+                <div>
+                    <h3 class="text-2xl font-bold">সারাদেশের ৬৪ জেলার পারফরম্যান্স ডাটাবেজ</h3>
+                    <p class="text-slate-500 text-sm mt-1">স্বচ্ছতা নিশ্চিতে প্রতিটি জেলার ডাটা সরাসরি ভেরিফাই করা সম্ভব।</p>
+                </div>
+                <div class="flex gap-4 w-full md:w-auto">
+                    <input type="text" id="districtSearch" placeholder="জেলা খুঁজুন..." class="bg-white/5 border border-white/10 p-3 rounded-xl outline-none focus:border-blue-500 text-sm w-full">
+                    <button class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-xl font-bold text-sm transition-all whitespace-nowrap">CSV এক্সপোর্ট</button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-white/5 text-slate-400 text-xs uppercase tracking-tighter">
+                            <th class="p-6 border-b border-white/5">র‍্যাঙ্ক</th>
+                            <th class="p-6 border-b border-white/5">জেলার নাম</th>
+                            <th class="p-6 border-b border-white/5">বিভাগ</th>
+                            <th class="p-6 border-b border-white/5">মোট প্রতিষ্ঠান</th>
+                            <th class="p-6 border-b border-white/5">ডিজিটাল প্রগতি (%)</th>
+                            <th class="p-6 border-b border-white/5">বাজেট ব্যবহার</th>
+                            <th class="p-6 border-b border-white/5">স্বচ্ছতা ইনডেক্স</th>
+                            <th class="p-6 border-b border-white/5">অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="nationalTableBody" class="text-sm">
+                        </tbody>
+                </table>
+            </div>
+            
+            <div class="p-6 border-t border-white/5 text-center text-slate-500 text-xs">
+                প্রদর্শিত হচ্ছে ১ - ৬৪ (মোট ৬৪টি জেলা) | ডাটা সিঙ্ক্রোনাইজেশন টাইম: ৫ সেকেন্ড আগে
+            </div>
+        </div>
+    </section>
+
+    <footer class="max-w-[1600px] mx-auto mt-20 pb-20 border-t border-white/5 pt-10 text-center">
+        <div class="flex justify-center gap-10 mb-8 opacity-40">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Government_Seal_of_Bangladesh.svg" class="h-12 w-12" alt="Gov">
+            <div class="h-12 w-[1px] bg-white/20"></div>
+            <i data-lucide="shield-check" class="w-12 h-12"></i>
+        </div>
+        <p class="text-slate-500 text-xs max-w-2xl mx-auto leading-relaxed">
+            এই রিপোর্টটি একটি ওপেন-সোর্স পাবলিক ডাটাবেজের অংশ। এখানে প্রদর্শিত তথ্যে কোনো অসঙ্গতি পরিলক্ষিত হলে সরাসরি শিক্ষা মন্ত্রণালয় বা দুর্নীতি দমন কমিশনে রিপোর্ট করার অনুরোধ করা হলো। তথ্যই শক্তি, স্বচ্ছতাই সমৃদ্ধি।
+        </p>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // 1. Line Chart: National Digital Growth Trend
+        const ctxTrend = document.getElementById('nationalTrendChart').getContext('2d');
+        new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: ['২০১৬', '২০১৭', '২০১৮', '২০১৯', '২০২০', '২০২১', '২০২২', '২০২৩', '২০২৪', '২০২৫', '২০২৬'],
+                datasets: [{
+                    label: 'ডিজিটাল ল্যাব সংখ্যা',
+                    data: [1200, 2500, 4800, 7200, 9500, 11000, 13500, 15800, 17200, 18500, 18950],
+                    borderColor: '#3b82f6',
+                    borderWidth: 4,
+                    pointBackgroundColor: '#3b82f6',
+                    pointRadius: 5,
+                    tension: 0.4,
+                    fill: {
+                        target: 'origin',
+                        above: 'rgba(59, 130, 246, 0.05)',
+                    }
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } },
+                    x: { grid: { display: false }, ticks: { color: '#64748b' } }
+                }
+            }
+        });
+
+        // 2. Doughnut Chart: Resource Distribution
+        const ctxRes = document.getElementById('resourceDoughnut').getContext('2d');
+        new Chart(ctxRes, {
+            type: 'doughnut',
+            data: {
+                labels: ['ডিভাইস', 'নেটওয়ার্ক', 'মেন্টর'],
+                datasets: [{
+                    data: [40, 35, 25],
+                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                    hoverOffset: 20,
+                    borderWidth: 0,
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                cutout: '80%',
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // 3. Massive Data Generation (64 Districts)
+        const districts = [
+            "ঢাকা", "চট্টগ্রাম", "কুমিল্লা", "গাজীপুর", "সিলেট", "রাজশাহী", "খুলনা", "বগুড়া", "নোয়াখালী", "বরিশাল", 
+            "রংপুর", "ময়মনসিংহ", "যশোর", "ফেনী", "কক্সবাজার", "ব্রাহ্মণবাড়িয়া", "কুষ্টিয়া", "টাঙ্গাইল", "চাঁদপুর", "সিরাজগঞ্জ",
+            "পাবনা", "দিনাজপুর", "জামালপুর", "নাটোর", "মাদারীপুর", "শরীয়তপুর", "রাজবাড়ী", "ফরিদপুর", "গোপালগঞ্জ", "মানিকগঞ্জ",
+            "মুন্সীগঞ্জ", "নারায়ণগঞ্জ", "নরসিংদী", "নেত্রকোণা", "কিশোরগঞ্জ", "শেরপুর", "সুনামগঞ্জ", "হবিগঞ্জ", "মৌলভীবাজার", "সাতক্ষীরা",
+            "বাগেরহাট", "ঝিনাইদহ", "মাগুরা", "নড়াইল", "চুয়াডাঙ্গা", "মেহেরপুর", "ভোলা", "পটুয়াখালী", "বরগুনা", "ঝালকাঠি",
+            "পিরোজপুর", "কুড়িগ্রাম", "গাইবান্ধা", "নীলফামারী", "লালমনিরহাট", "পঞ্চগড়", "ঠাকুরগাঁও", "চাঁপাইনবাবগঞ্জ", "নওগাঁ", "জয়পুরহাট",
+            "খাগড়াছড়ি", "রাঙ্গামাটি", "বান্দরবান", "লক্ষ্মীপুর"
+        ];
+
+        const divisions = ["ঢাকা", "চট্টগ্রাম", "চট্টগ্রাম", "ঢাকা", "সিলেট", "রাজশাহী", "খুলনা", "রাজশাহী", "চট্টগ্রাম", "বরিশাল", "রংপুর", "ময়মনসিংহ"];
+
+        const tableBody = document.getElementById('nationalTableBody');
+
+        districts.forEach((district, index) => {
+            const progress = Math.floor(Math.random() * 40) + 60; // 60-100%
+            const budget = (Math.random() * 50 + 10).toFixed(2); // 10-60 Crore
+            const transparency = (Math.random() * 2 + 8).toFixed(1); // 8.0 - 10.0
+            const row = document.createElement('tr');
+            row.className = "data-row transition-all border-b border-white/5";
+            
+            row.innerHTML = `
+                <td class="p-6 text-slate-500 font-mono">#${index + 1}</td>
+                <td class="p-6 font-bold text-white">${district}</td>
+                <td class="p-6 text-slate-400 text-xs">${divisions[index % divisions.length]} বিভাগ</td>
+                <td class="p-6 text-slate-400 font-medium">${Math.floor(Math.random() * 1000) + 200}টি</td>
+                <td class="p-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-20 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500" style="width: ${progress}%"></div>
+                        </div>
+                        <span class="text-xs font-bold text-blue-400">${progress}%</span>
+                    </div>
+                </td>
+                <td class="p-6 font-mono text-emerald-500">৳ ${budget} Cr</td>
+                <td class="p-6">
+                    <span class="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs font-bold ${transparency > 9 ? 'text-green-400' : 'text-orange-400'}">
+                        ${transparency} / ১০
+                    </span>
+                </td>
+                <td class="p-6">
+                    <button class="text-blue-500 hover:text-white transition-all">
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // Search Filter Logic
+        document.getElementById('districtSearch').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            const rows = tableBody.getElementsByTagName('tr');
+            Array.from(rows).forEach(row => {
+                const districtName = row.getElementsByTagName('td')[1].innerText.toLowerCase();
+                row.style.display = districtName.includes(term) ? '' : 'none';
+            });
+        });
+
+    </script>
+</body>
+</html>

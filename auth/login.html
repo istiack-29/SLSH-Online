@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLSH ONLINE - লগইন</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @font-face {
+            font-family: 'iOS Bangla';
+            src: url('../assets/fonts/iOS Bangla Font.ttf') format('truetype');
+        }
+
+        :root {
+            --bg-dark: #05070a;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #3b82f6;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #e2e8f0;
+            font-family: 'iOS Bangla', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
+            margin: 0;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+        }
+
+        .iphone-input {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: white;
+            padding: 14px;
+            width: 100%;
+            outline: none;
+            margin-top: 8px;
+        }
+
+        .btn-login {
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            padding: 16px;
+            border-radius: 14px;
+            width: 100%;
+            margin-top: 24px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-login:hover {
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* পাবলিক রিপোর্ট বাটন স্টাইল */
+        .btn-report {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-report:hover {
+            color: #3b82f6;
+        }
+
+        #notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            color: white;
+            font-size: 14px;
+            display: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="notification"></div>
+
+    <div class="glass-card">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold tracking-tighter">SLSH <span class="text-blue-500">ONLINE</span></h1>
+            <p class="text-slate-400 text-sm mt-1">প্রবেশের জন্য তথ্য প্রদান করুন</p>
+        </div>
+
+        <form onsubmit="processLogin(event)">
+            <div class="mb-4">
+                <label class="text-xs font-bold text-slate-500 uppercase ml-1">ইউজার রোল</label>
+                <select id="userRole" class="iphone-input">
+                    <option value="-college">স্কুল / কলেজ</option>
+                    <option value="union">ইউনিয়ন অফিস</option>
+                    <option value="district">জেলা অফিস</option>
+                    <option value="ministry">শিক্ষা মন্ত্রণালয়</option>
+                </select>
+            </div>
+
+            <div class="space-y-4">
+                <input type="text" placeholder="ইউজার আইডি / EIIN" class="iphone-input" required>
+                <input type="password" placeholder="পাসওয়ার্ড" class="iphone-input" required>
+            </div>
+
+            <button type="submit" class="btn-login">
+                লগইন করুন
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </button>
+        </form>
+
+        <a href="../reports/select_report.html" class="btn-report group">
+            <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+            ভিউ পাবলিক রিপোর্ট
+            <i data-lucide="chevron-right" class="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+        </a>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function showStatus(msg) {
+            const el = document.getElementById('notification');
+            el.innerText = msg;
+            el.style.display = 'block';
+        }
+
+        function processLogin(e) {
+            e.preventDefault();
+            const role = document.getElementById('userRole').value;
+            
+            showStatus("লগইন সফল! আপনার ড্যাশবোর্ড লোড হচ্ছে...");
+
+            setTimeout(() => {
+                const destination = `../dashboards/${role}-dashboard.html`;
+                window.location.href = destination;
+            }, 1200);
+        }
+    </script>
+</body>
+</html>

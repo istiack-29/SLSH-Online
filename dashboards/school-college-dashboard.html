@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLSH ONLINE - স্মার্ট ড্যাশবোর্ড</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @font-face {
+            font-family: 'iOS Bangla';
+            src: url('../assets/fonts/iOS Bangla Font.ttf') format('truetype');
+        }
+
+        :root {
+            --bg-dark: #020408;
+            --glass: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --accent: #3b82f6;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #e2e8f0;
+            font-family: 'iOS Bangla', sans-serif;
+            background-image: radial-gradient(circle at 50% -20%, #1e293b 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+        }
+
+        .feature-link {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-link:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        #notification-container {
+            position: fixed; top: 24px; right: 24px; z-index: 100;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+
+        .toast {
+            animation: slideIn 0.5s ease forwards;
+            background: rgba(15, 23, 42, 0.9);
+            border-left: 4px solid var(--accent);
+            padding: 16px; border-radius: 12px; color: white;
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div id="notification-container"></div>
+
+    <header class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center">
+                <i data-lucide="" class="text-white w-8 h-8"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight">সাদেকপুর মডেল হাই স্কুল</h1>
+                <p class="text-slate-400 text-sm">EIIN: ১০২৯৩৮ | কুমিল্লা</p>
+            </div>
+        </div>
+        <div>
+             <button onclick="handleLogout()" class="glass-card px-6 py-2.5 text-sm text-red-400 border-red-500/30 hover:bg-red-500 hover:text-white transition-all font-bold flex items-center gap-2">
+                <i data-lucide="log-out" class="w-4 h-4"></i> লগআউট
+             </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Quick Nav -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <a href="../features/attendance.html" class="feature-link"><i data-lucide="user-check"></i> <b>এটেন্ডেন্স</b></a>
+            <a href="../features/skills.html" class="feature-link"><i data-lucide="award"></i> <b>স্কিলস</b></a>
+            <a href="../features/students.html" class="feature-link"><i data-lucide="users"></i> <b>স্টুডেন্টস</b></a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Resource Request Form -->
+            <div class="lg:col-span-2 glass-card p-6">
+                <h3 class="font-bold mb-6 flex items-center gap-2 text-lg">
+                    <i data-lucide="package-plus" class="text-blue-500"></i> ইউনিয়ন রিসোর্স রিকোয়েস্ট ফরম
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="text-xs text-slate-500 block mb-2 font-bold uppercase">রিসোর্স ক্যাটাগরি</label>
+                        <select id="resource-type" class="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 outline-none focus:border-blue-500">
+                            <option value="ডিজিটাল প্রজেক্টর">ডিজিটাল প্রজেক্টর</option>
+                            <option value="কম্পিউটার/ল্যাপটপ">কম্পিউটার/ল্যাপটপ</option>
+                            <option value="বিজ্ঞান ল্যাব সরঞ্জাম">বিজ্ঞান ল্যাব সরঞ্জাম</option>
+                            <option value="ইন্টারনেট রাউটার">ইন্টারনেট রাউটার</option>
+                            <option value="বই/লাইব্রেরি সামগ্রী">বই/লাইব্রেরি সামগ্রী</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-500 block mb-2 font-bold uppercase">পরিমাণ</label>
+                        <input type="number" id="resource-qty" placeholder="উদা: ৫" class="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="text-xs text-slate-500 block mb-2 font-bold uppercase">প্রয়োজনীয়তার কারণ (সংক্ষেপে)</label>
+                    <textarea id="resource-note" class="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 h-24 outline-none focus:border-blue-500" placeholder="কেন এই রিসোর্সটি প্রয়োজন..."></textarea>
+                </div>
+                <button onclick="sendResourceRequest()" class="bg-blue-600 hover:bg-blue-500 w-full py-4 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all text-sm">ইউনিয়ন ডাটাবেজে রিকোয়েস্ট পাঠান</button>
+            </div>
+
+            <!-- Teacher Alert & Reporting -->
+            <div class="glass-card p-6 border-t-4 border-t-red-500 flex flex-col">
+                <h3 class="font-bold mb-2 text-red-500 flex items-center gap-2 uppercase text-xs tracking-widest">
+                    <i data-lucide="alert-triangle" class="w-4 h-4"></i> শিক্ষক হাজিরা রিপোর্ট
+                </h3>
+                <p class="text-[11px] text-slate-500 mb-6">অনুপস্থিত শিক্ষকদের তথ্য সরাসরি ইউনিয়ন শিক্ষা অফিসে রিপোর্ট করুন।</p>
+                
+                <div class="space-y-4 flex-1" id="teacher-alert-list">
+                    <!-- Teacher 1 -->
+                    <div class="p-4 bg-red-500/5 border border-red-500/10 rounded-2xl flex justify-between items-center group hover:bg-red-500/10 transition-colors">
+                        <div>
+                            <h4 class="text-sm font-bold">আব্দুর রহমান</h4>
+                            <p class="text-[10px] text-slate-500">গণিত বিভাগ | অনুপস্থিত: ২ দিন</p>
+                        </div>
+                        <button onclick="reportTeacher('আব্দুর রহমান')" class="bg-red-500/20 text-red-500 text-[10px] px-3 py-2 rounded-lg font-bold hover:bg-red-500 hover:text-white transition-all uppercase">রিপোর্ট</button>
+                    </div>
+                    <!-- Teacher 2 -->
+                    <div class="p-4 bg-red-500/5 border border-red-500/10 rounded-2xl flex justify-between items-center group hover:bg-red-500/10 transition-colors">
+                        <div>
+                            <h4 class="text-sm font-bold">সুমাইয়া আক্তার</h4>
+                            <p class="text-[10px] text-slate-500">ইংরেজি বিভাগ | অনুপস্থিত: ১ দিন</p>
+                        </div>
+                        <button onclick="reportTeacher('সুমাইয়া আক্তার')" class="bg-red-500/20 text-red-500 text-[10px] px-3 py-2 rounded-lg font-bold hover:bg-red-500 hover:text-white transition-all uppercase">রিপোর্ট</button>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-4 bg-white/5 rounded-2xl border border-dashed border-white/10 text-center">
+                    <p class="text-[10px] text-slate-500 leading-relaxed italic">সতর্কতা: রিপোর্ট পাঠানোর পর সেটি ইউনিয়ন ম্যানেজমেন্ট সিস্টেমে সংরক্ষিত হবে।</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // Logout function
+        function handleLogout() {
+            // Animation/Transition effect (Optional)
+            document.body.style.opacity = '0.5';
+            document.body.style.pointerEvents = 'none';
+            
+            // Redirect to login page
+            // Assuming login.html is in the auth folder or relative path
+            setTimeout(() => {
+                window.location.href = '../auth/login.html'; 
+            }, 300);
+        }
+
+        function showToast(message, iconName = 'check', color = '#3b82f6') {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.borderLeftColor = color;
+            toast.innerHTML = `
+                <i data-lucide="${iconName}" class="w-5 h-5" style="color:${color}"></i>
+                <span class="text-sm font-bold">${message}</span>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        }
+
+        function sendResourceRequest() {
+            const type = document.getElementById('resource-type').value;
+            const qty = document.getElementById('resource-qty').value;
+            const note = document.getElementById('resource-note').value;
+
+            if(!qty || !note) {
+                showToast('দয়া করে সব ঘর পূরণ করুন', 'alert-circle', '#ef4444');
+                return;
+            }
+
+            showToast(`${qty}টি ${type} এর আবেদন ইউনিয়নে পাঠানো হয়েছে।`, 'send', '#10b981');
+            
+            // Clear inputs
+            document.getElementById('resource-qty').value = '';
+            document.getElementById('resource-note').value = '';
+        }
+
+        function reportTeacher(name) {
+            // Custom modal logic could go here, using a simple confirm for now
+            const confirmReport = confirm(`আপনি কি নিশ্চিত যে শিক্ষক ${name}-এর অনুপস্থিতি ইউনিয়নে রিপোর্ট করতে চান?`);
+            if(confirmReport) {
+                showToast(`শিক্ষক ${name}-এর রিপোর্ট সফলভাবে পাঠানো হয়েছে।`, 'shield-alert', '#ef4444');
+            }
+        }
+    </script>
+</body>
+</html>
+

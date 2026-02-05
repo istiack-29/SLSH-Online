@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLSH - ডিস্ট্রিক্ট সামারি আর্কাইভ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @font-face {
+            font-family: 'iOS Bangla';
+            src: url('../assets/fonts/iOS Bangla Font.ttf') format('truetype');
+        }
+
+        :root {
+            --bg-dark: #020408;
+            --glass: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent-blue: #3b82f6;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #e2e8f0;
+            font-family: 'iOS Bangla', sans-serif;
+            background-image: radial-gradient(circle at 50% -20%, #1e293b 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 10px 20px;
+            border-radius: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+        }
+
+        .back-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+            border-color: var(--accent-blue);
+            transform: translateX(-5px);
+        }
+
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2em;
+        }
+
+        /* Table Animation */
+        .data-row { animation: fadeIn 0.5s ease forwards; opacity: 0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+
+    <nav class="max-w-7xl mx-auto flex justify-between items-center mb-12">
+        <a href="../reports/select_report.html" class="back-btn group">
+            <i data-lucide="arrow-left" class="w-5 h-5 group-hover:animate-pulse"></i>
+            <span class="font-bold">ফিরে যান</span>
+        </a>
+        <div class="text-right hidden md:block">
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest font-black">Security Protocol</p>
+            <p class="text-xs text-blue-500 font-mono">ENCRYPTED_ACCESS_ACTIVE</p>
+        </div>
+    </nav>
+
+    <header class="max-w-7xl mx-auto mb-16">
+        <div class="flex flex-col md:flex-row justify-between items-end gap-8">
+            <div class="text-left space-y-4">
+                <div class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[10px] font-bold uppercase tracking-widest">Transparency Portal</div>
+                <h1 class="text-5xl font-black text-white leading-tight">জেলা ভিত্তিক <br><span class="text-blue-500">সামারি আর্কাইভ</span></h1>
+                <p class="text-slate-400 max-w-2xl text-lg italic leading-relaxed border-l-2 border-blue-500/30 pl-6">
+                    “রাষ্ট্রের সর্বোচ্চ স্বচ্ছতা নিশ্চিত করতে এবং দুর্নীতি দমনে ও জাতিকে সুশিক্ষিত জাতি হিসেবে গড়ে তুলতে এই ওয়েবসাইটে সমস্ত রিপোর্ট পাবলিক করা হলো যাতে দেশের যেকোনো জনগণ এই রিপোর্ট দেখতে পারে।”
+                </p>
+            </div>
+            
+            <div class="relative w-full md:w-96 glass-card p-6 border-blue-500/20">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 block">অনুগ্রহ করে জেলা নির্বাচন করুন</label>
+                <select id="districtPicker" onchange="triggerReport()" class="custom-select w-full bg-white/5 border border-white/10 text-white rounded-xl p-4 outline-none focus:border-blue-500 transition-all cursor-pointer font-bold">
+                    <option value="">নির্বাচন করুন...</option>
+                    <option value="Dhaka">ঢাকা (Dhaka)</option>
+                    <option value="Comilla">কুমিল্লা (Comilla)</option>
+                    <option value="Chittagong">চট্টগ্রাম (Chittagong)</option>
+                    <option value="Sylhet">সিলেট (Sylhet)</option>
+                    <option value="Rajshahi">রাজশাহী (Rajshahi)</option>
+                    <option value="Khulna">খুলনা (Khulna)</option>
+                    <option value="Barisal">বরিশাল (Barisal)</option>
+                    <option value="Rangpur">রংপুর (Rangpur)</option>
+                    <option value="Mymensingh">ময়মনসিংহ (Mymensingh)</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main id="reportContainer" class="max-w-7xl mx-auto hidden space-y-10 pb-20">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="glass-card p-8 group hover:bg-white/5 transition-all">
+                <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i data-lucide="school" class="text-blue-500"></i>
+                </div>
+                <p class="text-xs text-slate-500 uppercase font-black tracking-widest">মোট শিক্ষা প্রতিষ্ঠান</p>
+                <h2 id="count-school" class="text-4xl font-black mt-2">0</h2>
+            </div>
+            <div class="glass-card p-8 group hover:bg-white/5 transition-all">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-6">
+                    <i data-lucide="users" class="text-emerald-500"></i>
+                </div>
+                <p class="text-xs text-slate-500 uppercase font-black tracking-widest">মোট শিক্ষার্থী</p>
+                <h2 id="count-student" class="text-4xl font-black mt-2">0</h2>
+            </div>
+            <div class="glass-card p-8 group hover:bg-white/5 transition-all">
+                <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6">
+                    <i data-lucide="monitor" class="text-purple-500"></i>
+                </div>
+                <p class="text-xs text-slate-500 uppercase font-black tracking-widest">স্মার্ট হাব ল্যাব</p>
+                <h2 id="count-lab" class="text-4xl font-black mt-2">0</h2>
+            </div>
+            <div class="glass-card p-8 border-b-4 border-b-blue-600">
+                <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
+                    <i data-lucide="check-circle" class="text-white"></i>
+                </div>
+                <p class="text-xs text-slate-500 uppercase font-black tracking-widest">ভেরিফিকেশন স্কোর</p>
+                <h2 class="text-4xl font-black mt-2">৯.৮</h2>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 glass-card p-10">
+                <h3 class="font-bold text-xl mb-8 flex items-center gap-3"><i data-lucide="trending-up" class="text-blue-500"></i> উপস্থিতির মাসিক গ্রাফ</h3>
+                <canvas id="performanceChart" height="150"></canvas>
+            </div>
+            <div class="glass-card p-10 flex flex-col items-center justify-center">
+                <h3 class="font-bold text-xl mb-8 w-full"><i data-lucide="pie-chart" class="text-emerald-500"></i> রিসোর্স বণ্টন</h3>
+                <canvas id="budgetChart"></canvas>
+            </div>
+        </div>
+
+        <div class="glass-card overflow-hidden">
+            <div class="p-8 bg-white/5 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+                <h3 class="text-xl font-bold">প্রতিষ্ঠান ভিত্তিক পূর্ণাঙ্গ ডাটাবেজ</h3>
+                <div class="flex gap-4">
+                    <button class="px-6 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-bold hover:bg-blue-600 transition-all">PRINT REPORT</button>
+                    <button class="px-6 py-2 bg-blue-600 rounded-xl text-xs font-bold shadow-lg shadow-blue-500/20 uppercase">Export Excel</button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-white/5 text-[10px] uppercase font-black text-slate-500 tracking-widest">
+                        <tr>
+                            <th class="p-6">EIIN</th>
+                            <th class="p-6">প্রতিষ্ঠানের নাম</th>
+                            <th class="p-6">বিভাগ</th>
+                            <th class="p-6">শিক্ষার্থী</th>
+                            <th class="p-6">পারফরম্যান্স</th>
+                            <th class="p-6">অবস্থা</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hugeTableBody" class="text-sm">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="placeholder" class="max-w-2xl mx-auto text-center mt-32 animate-pulse">
+        <i data-lucide="database" class="w-20 h-20 text-slate-700 mx-auto mb-8"></i>
+        <h2 class="text-3xl font-black text-white/20 uppercase tracking-tighter">Awaiting Selection</h2>
+        <p class="text-slate-600 mt-2 font-bold">ডেটা প্রসেসিং এর জন্য একটি জেলা নির্বাচন করুন</p>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function triggerReport() {
+            const district = document.getElementById('districtPicker').value;
+            const container = document.getElementById('reportContainer');
+            const placeholder = document.getElementById('placeholder');
+
+            if (!district) {
+                container.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                return;
+            }
+
+            placeholder.classList.add('hidden');
+            container.classList.remove('hidden');
+
+            // Counter Animations
+            animateValue("count-school", 0, 842, 2000);
+            animateValue("count-student", 0, 42500, 2000);
+            animateValue("count-lab", 0, 156, 2000);
+
+            renderCharts();
+            generateMassiveData();
+        }
+
+        function animateValue(id, start, end, duration) {
+            let obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString();
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function generateMassiveData() {
+            const tbody = document.getElementById('hugeTableBody');
+            tbody.innerHTML = "";
+            for (let i = 1; i <= 100; i++) {
+                const tr = document.createElement('tr');
+                tr.className = "data-row border-b border-white/5 hover:bg-white/5 transition-all";
+                tr.style.animationDelay = (i * 0.01) + "s";
+                tr.innerHTML = `
+                    <td class="p-6 font-mono text-blue-500">#${102400 + i}</td>
+                    <td class="p-6 font-bold text-white text-sm">আদর্শ উচ্চ বিদ্যালয় কমপ্লেক্স - শাখা ${i}</td>
+                    <td class="p-6 text-xs text-slate-500">বিজ্ঞান ও প্রযুক্তি বিভাগ</td>
+                    <td class="p-6 text-sm">${Math.floor(Math.random()*1000) + 200}</td>
+                    <td class="p-6 text-emerald-500 font-bold">৯${Math.floor(Math.random()*9)}%</td>
+                    <td class="p-6"><span class="px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-[10px] font-bold uppercase tracking-widest">Active</span></td>
+                `;
+                tbody.appendChild(tr);
+            }
+            lucide.createIcons();
+        }
+
+        function renderCharts() {
+            const ctx1 = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'প্রগতি',
+                        data: [65, 78, 82, 75, 90, 95],
+                        borderColor: '#3b82f6',
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(59, 130, 246, 0.05)'
+                    }]
+                },
+                options: { plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            });
+
+            const ctx2 = document.getElementById('budgetChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Technology', 'Staff', 'Maintenance'],
+                    datasets: [{
+                        data: [50, 30, 20],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { cutout: '80%', plugins: { legend: { display: false } } }
+            });
+        }
+    </script>
+</body>
+</html>
