@@ -1,9 +1,0 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta http-equiv="refresh" content="0; url=auth/login.html">
-</head>
-<body>
-    Please wait, redirecting to Login...
-</body>
-</html>
